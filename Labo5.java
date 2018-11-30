@@ -14,5 +14,7 @@ public class Labo5
     public static void main(String args[])
     {
         System.out.println("Hello world!");
+        UI ui = new UI();
+        ui.show();
     }
 }
