@@ -31,9 +31,19 @@ public class UI extends javax.swing.JFrame
         
         // populate the all words list
         this.setAllWords(allWords);
+        refreshAllWordsList();
+    }
+    
+    // instance methods
+    /**
+     * Method used to refresh the all words list.
+     * It is called when object is created and when a new word is added
+     */
+    public void refreshAllWordsList()
+    {
         DefaultListModel model = new DefaultListModel();
         
-        for(WordDefinition word : allWords)
+        for(WordDefinition word : this.getAllWords())
         {
             model.addElement(word.getWord());
         }
@@ -178,6 +188,11 @@ public class UI extends javax.swing.JFrame
         );
 
         addModifyButton.setText("ajouter / modifier");
+        addModifyButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                addModifyButtonMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -293,7 +308,34 @@ public class UI extends javax.swing.JFrame
             }
         }
         
+        this.getInputField().setText(selectedWord);
+        
     }//GEN-LAST:event_allWordsListMouseClicked
+
+    private void addModifyButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addModifyButtonMouseClicked
+        String inputWord = this.getInputField().getText();
+        String inputDefinition = this.getDefinitionField().getText();
+        
+        boolean wordFound = false;
+        for(int i = 0 ; i < this.getAllWords().size() ; i++)
+        {
+            if(this.getAllWords().get(i).getWord().equals(inputWord))
+            {
+                this.getAllWords().get(i).setDefinition(inputDefinition);
+                
+                wordFound = true;
+                i = this.getAllWords().size();
+            }
+        }
+        
+        // if word not found, we have to add it to the list
+        if(!wordFound)
+        {
+            WordDefinition word = new WordDefinition(inputWord, inputDefinition);
+            this.getAllWords().add(word);
+            refreshAllWordsList();
+        }
+    }//GEN-LAST:event_addModifyButtonMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
