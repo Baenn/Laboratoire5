@@ -1,13 +1,14 @@
 package Laboratoire5;
 
-public class MotDefinition {
+public class WordDefinition {
 
     private String Mot;
     private String definition;
 
-    public MotDefinition(String mot, String definition) {
+    public WordDefinition(String mot, String definition) 
+    {
         if(mot == null || mot.isEmpty())
-            throw new MotException();
+            throw new WordException();
         else if(definition == null || definition.isEmpty())
             throw new DefinitionException();
         setMot(mot);
