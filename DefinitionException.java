@@ -1,4 +1,4 @@
-package Labo5;
+package Laboratoire5;
 
 public class DefinitionException extends IllegalArgumentException {
 

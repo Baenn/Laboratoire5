@@ -1,4 +1,4 @@
-package Labo5;
+package Laboratoire5;
 
 import java.util.List;
 import java.util.Vector;
