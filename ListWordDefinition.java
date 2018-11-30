@@ -27,12 +27,12 @@ public class ListWordDefinition  implements InterfaceWordDefinition{
     }
 
     @Override
-    public List<WordDefinition> getMot(String m) {
+    public List<WordDefinition> getWord(String m) {
         return null;
     }
 
     @Override
-    public List<WordDefinition> getAllMotDefinition() {
+    public List<WordDefinition> getAllWordsDefinition() {
         return null;
     }
 

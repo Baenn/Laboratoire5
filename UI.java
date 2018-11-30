@@ -5,19 +5,40 @@
  */
 package Laboratoire5;
 
+import java.util.List;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JList;
+import javax.swing.JTextField;
+import javax.swing.ListModel;
+
 /**
  *
  * @author AP85250
  */
-public class UI extends javax.swing.JFrame {
-
+public class UI extends javax.swing.JFrame 
+{
+    // attributs
+    private List<WordDefinition> allWords;
+    
     /**
      * Creates new form UI
      */
-    public UI(allWordsList) 
+    public UI(List<WordDefinition> allWords) 
     {
         initComponents();
         setTitle("Dictio");
+        
+        // populate the all words list
+        this.setAllWords(allWords);
+        DefaultListModel model = new DefaultListModel();
+        
+        for(WordDefinition word : allWords)
+        {
+            model.addElement(word.getWord());
+        }
+        
+        this.getAllWordsList().setModel(model);
     }
 
     /**
@@ -33,11 +54,14 @@ public class UI extends javax.swing.JFrame {
         inputField = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         suggestionList = new javax.swing.JList<>();
+        jLabel4 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         allWordsList = new javax.swing.JList<>();
+        jLabel3 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         definitionField = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         addModifyButton = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
@@ -54,13 +78,19 @@ public class UI extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(suggestionList);
 
+        jLabel4.setText("Recherche");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(inputField, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(inputField, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
@@ -72,12 +102,14 @@ public class UI extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(inputField, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel4)
+                .addGap(18, 18, 18)
+                .addComponent(inputField, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGap(64, 64, 64)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addContainerGap(80, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap()))
         );
 
@@ -86,7 +118,14 @@ public class UI extends javax.swing.JFrame {
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
+        allWordsList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                allWordsListMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(allWordsList);
+
+        jLabel3.setText("Tous les mots");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -95,12 +134,18 @@ public class UI extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel3)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -110,17 +155,25 @@ public class UI extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setText("Définition");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(definitionField, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(definitionField)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
+                .addComponent(definitionField, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -225,40 +278,23 @@ public class UI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_definitionFieldActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
+    private void allWordsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allWordsListMouseClicked
+        
+        String selectedWord = this.getAllWordsList().getSelectedValue();
+        
+        // get the definition
+        for(int i = 0 ; i < this.getAllWords().size() ; i++)
+        {
+            if(this.getAllWords().get(i).getWord().equals(selectedWord))
+            {
+                // update definition field
+                this.getDefinitionField().setText(this.getAllWords().get(i).getDefinition());
+                i = this.getAllWords().size(); // escape the looop
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(UI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(UI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(UI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(UI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
+        
+    }//GEN-LAST:event_allWordsListMouseClicked
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new UI().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addModifyButton;
@@ -266,6 +302,9 @@ public class UI extends javax.swing.JFrame {
     private javax.swing.JTextField definitionField;
     private javax.swing.JTextField inputField;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -277,4 +316,71 @@ public class UI extends javax.swing.JFrame {
     private javax.swing.JButton saveButton;
     private javax.swing.JList<String> suggestionList;
     // End of variables declaration//GEN-END:variables
+
+
+    // accessor methods
+    public List<WordDefinition> getAllWords() {
+        return allWords;
+    }
+
+    public JButton getAddModifyButton() {
+        return addModifyButton;
+    }
+
+    public JList<String> getAllWordsList() {
+        return allWordsList;
+    }
+
+    public JTextField getDefinitionField() {
+        return definitionField;
+    }
+
+    public JTextField getInputField() {
+        return inputField;
+    }
+
+    public JButton getLoadButton() {
+        return loadButton;
+    }
+
+    public JButton getSaveButton() {
+        return saveButton;
+    }
+
+    public JList<String> getSuggestionList() {
+        return suggestionList;
+    }
+    
+    // mutator methods
+    public void setAllWords(List<WordDefinition> allWords) {
+        this.allWords = allWords;
+    }
+
+    public void setAddModifyButton(JButton addModifyButton) {
+        this.addModifyButton = addModifyButton;
+    }
+
+    public void setAllWordsList(JList<String> allWordsList) {
+        this.allWordsList = allWordsList;
+    }
+
+    public void setDefinitionField(JTextField definitionField) {
+        this.definitionField = definitionField;
+    }
+
+    public void setInputField(JTextField inputField) {
+        this.inputField = inputField;
+    }
+
+    public void setLoadButton(JButton loadButton) {
+        this.loadButton = loadButton;
+    }
+
+    public void setSaveButton(JButton saveButton) {
+        this.saveButton = saveButton;
+    }
+
+    public void setSuggestionList(JList<String> suggestionList) {
+        this.suggestionList = suggestionList;
+    }
 }
