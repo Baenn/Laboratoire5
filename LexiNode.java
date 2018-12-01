@@ -1,30 +1,48 @@
 package Laboratoire5;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 public class LexiNode {
 
     private Character data;
     private LexiNode parent;
-    private LinkedList<LexiNode> children;
+    private LinkedList<LexiNode> listChildren;
+    private List<String> wordPossibility;
+    private boolean flag;
 
-    public LexiNode(LexiNode parent, Character data){
+    public LexiNode(LexiNode parent, Character data, boolean flag){
         setParent(parent);
         setData(data);
+        if(getParent() != null){
+            getParent().addChildren(this);
+        }
+        this.flag = flag;
+        listChildren = new LinkedList<LexiNode>();
+        wordPossibility = new ArrayList<String>();
+
     }
 
-    public boolean addChildren(LexiNode children){
-        return this.children.add(children);
+
+    private void fillWordPossibility(List<String> allWord){
+        if(flag)
+            allWord.add(this.toString());
+        for(LexiNode n : this.getChildren()){
+            n.fillWordPossibility(allWord);
+        }
     }
 
-    public LinkedList<LexiNode> getChildren(){
-        return children;
-    }
+
     @Override
     public String toString(){
         if(parent != null)
             return parent.toString()+getData();
-        return data.toString();
+        return getData().toString();
+    }
+
+    public LinkedList<LexiNode> getChildren(){
+        return listChildren;
     }
     public Character getData() {
         return data;
@@ -32,6 +50,15 @@ public class LexiNode {
 
     public LexiNode getParent() {
         return parent;
+    }
+
+    public List<String> getWordPossibility() {
+        fillWordPossibility(wordPossibility);
+        return wordPossibility;
+    }
+
+    public boolean addChildren(LexiNode children){
+        return getChildren().add(children);
     }
 
     public void setData(Character data) {
