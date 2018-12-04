@@ -5,10 +5,12 @@
  */
 package Laboratoire5;
 
+import java.awt.FileDialog;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 
@@ -20,6 +22,7 @@ public class UI extends javax.swing.JFrame
 {
     // attributs
     private List<WordDefinition> allWords;
+    private WordListDefinition wordList;
     
     /**
      * Creates new form UI
@@ -32,6 +35,7 @@ public class UI extends javax.swing.JFrame
         // populate the all words list
         this.setAllWords(allWords);
         refreshAllWordsList();
+        this.setWordList(new WordListDefinition());
     }
     
     // instance methods
@@ -210,9 +214,9 @@ public class UI extends javax.swing.JFrame
         );
 
         loadButton.setText("Charger");
-        loadButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadButtonActionPerformed(evt);
+        loadButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                loadButtonMouseClicked(evt);
             }
         });
 
@@ -285,10 +289,6 @@ public class UI extends javax.swing.JFrame
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_loadButtonActionPerformed
-
     private void definitionFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_definitionFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_definitionFieldActionPerformed
@@ -337,6 +337,25 @@ public class UI extends javax.swing.JFrame
         }
     }//GEN-LAST:event_addModifyButtonMouseClicked
 
+    private void loadButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loadButtonMouseClicked
+        // open file dialog
+        FileDialog dialog = new FileDialog(this, "Choose a dictionnary file", FileDialog.LOAD);
+        dialog.setFile("*.txt");
+        dialog.setVisible(true);
+        
+        String filename = dialog.getFile();
+        if(filename != null) // if user selected a file
+        {
+            filename = dialog.getDirectory() + filename;
+            
+            if(getWordList().loadListFromFile(filename))
+                refreshAllWordsList();
+            
+            else // if file could not be loaded, show error dialog
+                JOptionPane.showMessageDialog(this, "ERROR: The dictionnary file could not be loaded!");
+        }
+    }//GEN-LAST:event_loadButtonMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addModifyButton;
@@ -363,6 +382,10 @@ public class UI extends javax.swing.JFrame
     // accessor methods
     public List<WordDefinition> getAllWords() {
         return allWords;
+    }
+
+    public WordListDefinition getWordList() {
+        return wordList;
     }
 
     public JButton getAddModifyButton() {
@@ -396,6 +419,10 @@ public class UI extends javax.swing.JFrame
     // mutator methods
     public void setAllWords(List<WordDefinition> allWords) {
         this.allWords = allWords;
+    }
+
+    public void setWordList(WordListDefinition wordList) {
+        this.wordList = wordList;
     }
 
     public void setAddModifyButton(JButton addModifyButton) {
