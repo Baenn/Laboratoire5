@@ -2,7 +2,7 @@ package Laboratoire5;
 
 import java.util.List;
 
-public interface InterfaceWordDefinition {
+public interface WordDefinitionInterface {
     boolean addWordDefinition(WordDefinition m);
     boolean removeWordDefinition(WordDefinition m);
 
