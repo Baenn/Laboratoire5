@@ -352,7 +352,7 @@ public class UI extends javax.swing.JFrame
                 refreshAllWordsList();
             
             else // if file could not be loaded, show error dialog
-                JOptionPane.showMessageDialog(this, "ERROR: The dictionnary file could not be loaded!");
+                JOptionPane.showMessageDialog(this, "ERROR: Le fichier n'a pas pu être changé!");
         }
     }//GEN-LAST:event_loadButtonMouseClicked
 
