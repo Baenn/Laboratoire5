@@ -11,6 +11,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 
@@ -21,21 +22,22 @@ import javax.swing.ListModel;
 public class UI extends javax.swing.JFrame 
 {
     // attributs
-    private List<WordDefinition> allWords;
     private WordListDefinition wordList;
     
     /**
      * Creates new form UI
      */
-    public UI(List<WordDefinition> allWords) 
+    public UI() 
     {
+        // initiate attributs
+        wordList = new WordListDefinition();
+        
+        // initiate window component
         initComponents();
         setTitle("Dictio");
         
         // populate the all words list
-        this.setAllWords(allWords);
         refreshAllWordsList();
-        this.setWordList(new WordListDefinition());
     }
     
     // instance methods
@@ -46,8 +48,9 @@ public class UI extends javax.swing.JFrame
     public void refreshAllWordsList()
     {
         DefaultListModel model = new DefaultListModel();
+        List<WordDefinition> allWords = getWordList().getAllWordsDefinition();
         
-        for(WordDefinition word : this.getAllWords())
+        for(WordDefinition word : allWords)
         {
             model.addElement(word.getWord());
         }
@@ -67,15 +70,16 @@ public class UI extends javax.swing.JFrame
         jPanel1 = new javax.swing.JPanel();
         inputField = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
-        suggestionList = new javax.swing.JList<>();
+        suggestionList = new javax.swing.JList<String>();
         jLabel4 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        allWordsList = new javax.swing.JList<>();
+        allWordsList = new javax.swing.JList<String>();
         jLabel3 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        definitionField = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        definitionTextArea = new javax.swing.JTextArea();
         jPanel4 = new javax.swing.JPanel();
         addModifyButton = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
@@ -85,10 +89,10 @@ public class UI extends javax.swing.JFrame
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        suggestionList.setModel(new javax.swing.AbstractListModel<String>() {
+        suggestionList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+            public Object getElementAt(int i) { return strings[i]; }
         });
         jScrollPane2.setViewportView(suggestionList);
 
@@ -127,10 +131,10 @@ public class UI extends javax.swing.JFrame
                     .addContainerGap()))
         );
 
-        allWordsList.setModel(new javax.swing.AbstractListModel<String>() {
+        allWordsList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+            public Object getElementAt(int i) { return strings[i]; }
         });
         allWordsList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -163,23 +167,24 @@ public class UI extends javax.swing.JFrame
                 .addContainerGap())
         );
 
-        definitionField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                definitionFieldActionPerformed(evt);
-            }
-        });
-
         jLabel2.setText("Définition");
+
+        definitionTextArea.setColumns(20);
+        definitionTextArea.setLineWrap(true);
+        definitionTextArea.setRows(5);
+        definitionTextArea.setWrapStyleWord(true);
+        definitionTextArea.setBorder(javax.swing.BorderFactory.createCompoundBorder());
+        jScrollPane3.setViewportView(definitionTextArea);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(definitionField, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(138, Short.MAX_VALUE))
+            .addComponent(jScrollPane3)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -187,7 +192,7 @@ public class UI extends javax.swing.JFrame
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
-                .addComponent(definitionField, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -289,22 +294,19 @@ public class UI extends javax.swing.JFrame
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void definitionFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_definitionFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_definitionFieldActionPerformed
-
     private void allWordsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allWordsListMouseClicked
         
         String selectedWord = this.getAllWordsList().getSelectedValue();
+        List<WordDefinition> allWords = getWordList().getAllWordsDefinition();
         
         // get the definition
-        for(int i = 0 ; i < this.getAllWords().size() ; i++)
+        for(int i = 0 ; i < allWords.size() ; i++)
         {
-            if(this.getAllWords().get(i).getWord().equals(selectedWord))
+            if(allWords.get(i).getWord().equals(selectedWord))
             {
                 // update definition field
-                this.getDefinitionField().setText(this.getAllWords().get(i).getDefinition());
-                i = this.getAllWords().size(); // escape the looop
+                this.getDefinitionTextArea().setText(allWords.get(i).getDefinition());
+                i = allWords.size(); // escape the looop
             }
         }
         
@@ -314,32 +316,33 @@ public class UI extends javax.swing.JFrame
 
     private void addModifyButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addModifyButtonMouseClicked
         String inputWord = this.getInputField().getText();
-        String inputDefinition = this.getDefinitionField().getText();
+        String inputDefinition = this.getDefinitionTextArea().getText();
+        List<WordDefinition> allWords = getWordList().getAllWordsDefinition();
         
         boolean wordFound = false;
-        for(int i = 0 ; i < this.getAllWords().size() ; i++)
+        for(int i = 0 ; i < allWords.size() ; i++)
         {
-            if(this.getAllWords().get(i).getWord().equals(inputWord))
+            if(allWords.get(i).getWord().equals(inputWord))
             {
-                this.getAllWords().get(i).setDefinition(inputDefinition);
+                allWords.get(i).setDefinition(inputDefinition);
                 
                 wordFound = true;
-                i = this.getAllWords().size();
+                i = allWords.size();
             }
         }
         
         // if word not found, we have to add it to the list
-        if(!wordFound)
+        if(!wordFound) // TODO must resort after
         {
             WordDefinition word = new WordDefinition(inputWord, inputDefinition);
-            this.getAllWords().add(word);
+            allWords.add(word);
             refreshAllWordsList();
         }
     }//GEN-LAST:event_addModifyButtonMouseClicked
 
     private void loadButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loadButtonMouseClicked
         // open file dialog
-        FileDialog dialog = new FileDialog(this, "Choose a dictionnary file", FileDialog.LOAD);
+        FileDialog dialog = new FileDialog(this, "Choisir le fichier dictionnaire", FileDialog.LOAD);
         dialog.setFile("*.txt");
         dialog.setVisible(true);
         
@@ -352,7 +355,10 @@ public class UI extends javax.swing.JFrame
                 refreshAllWordsList();
             
             else // if file could not be loaded, show error dialog
-                JOptionPane.showMessageDialog(this, "ERROR: Le fichier n'a pas pu être changé!");
+                JOptionPane.showMessageDialog(this, "ERREUR: Le fichier n'a "
+                        + "pas pu être chargé!\n\nVérifiez que le fichier est "
+                        + "valid est contient <<mot & définition>> sur toutes "
+                        + "les lignes\n\n", "ERREUR", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_loadButtonMouseClicked
 
@@ -360,7 +366,7 @@ public class UI extends javax.swing.JFrame
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addModifyButton;
     private javax.swing.JList<String> allWordsList;
-    private javax.swing.JTextField definitionField;
+    private javax.swing.JTextArea definitionTextArea;
     private javax.swing.JTextField inputField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -373,6 +379,7 @@ public class UI extends javax.swing.JFrame
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JButton loadButton;
     private javax.swing.JButton saveButton;
     private javax.swing.JList<String> suggestionList;
@@ -380,10 +387,6 @@ public class UI extends javax.swing.JFrame
 
 
     // accessor methods
-    public List<WordDefinition> getAllWords() {
-        return allWords;
-    }
-
     public WordListDefinition getWordList() {
         return wordList;
     }
@@ -396,8 +399,8 @@ public class UI extends javax.swing.JFrame
         return allWordsList;
     }
 
-    public JTextField getDefinitionField() {
-        return definitionField;
+    public JTextArea getDefinitionTextArea() {
+        return definitionTextArea;
     }
 
     public JTextField getInputField() {
@@ -417,10 +420,6 @@ public class UI extends javax.swing.JFrame
     }
     
     // mutator methods
-    public void setAllWords(List<WordDefinition> allWords) {
-        this.allWords = allWords;
-    }
-
     public void setWordList(WordListDefinition wordList) {
         this.wordList = wordList;
     }
@@ -433,8 +432,8 @@ public class UI extends javax.swing.JFrame
         this.allWordsList = allWordsList;
     }
 
-    public void setDefinitionField(JTextField definitionField) {
-        this.definitionField = definitionField;
+    public void setDefinitionTextArea(JTextArea definitionTextArea) {
+        this.definitionTextArea = definitionTextArea;
     }
 
     public void setInputField(JTextField inputField) {
