@@ -1,8 +1,10 @@
 package Laboratoire5;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -19,10 +21,15 @@ public class WordListDefinition  implements WordDefinitionInterface
     }
 
     // instance methods 
+    /**
+     * Method used to load a list of word and its corresponding definition into
+     * the object's wordListDictio attribute
+     * @param filename The name of the dictionary file
+     * @return 
+     */
     public boolean loadListFromFile(String filename)
     {
         // load definitions from txt file
-        // example filename: "src/Laboratoire5/Dictio.txt";
         File file = new File(filename);
         
         try 
@@ -52,6 +59,40 @@ public class WordListDefinition  implements WordDefinitionInterface
         catch (Exception e) 
         {
             System.out.println("Could not load dictionnary file.");
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    /**
+     * Method used to save the word list (Represented by the wordListDictio 
+     * attribute) to a file. Each line in the file will have the following 
+     * format: word & definition
+     * @param filename The name of the file to save
+     * @return True if the operation is successful, false otherwise.
+     */
+    public boolean saveListToFile(String filename)
+    {
+        File file = new File(filename);
+        
+        try
+        {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            
+            // write each line in the following format: word & definition
+            for(WordDefinition wordDef : wordListDictio)
+            {
+                String line = wordDef.getWord() + " & " + wordDef.getDefinition() + "\n";
+                writer.write(line);
+            }
+            
+            writer.close();
+            return true;
+        }
+        
+        catch(Exception e)
+        {
+            System.out.println("Could not save to file");
             e.printStackTrace();
             return false;
         }

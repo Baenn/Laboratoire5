@@ -13,7 +13,6 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ListModel;
 
 /**
  *
@@ -23,6 +22,7 @@ public class UI extends javax.swing.JFrame
 {
     // attributs
     private WordListDefinition wordList;
+    private String loadedDictionaryFilename; // the name of the original file loaded (used for saving with the same name)
     
     /**
      * Creates new form UI
@@ -328,7 +328,7 @@ public class UI extends javax.swing.JFrame
 
     /**
      * Mouse clicked event for the add / modify button
-     * This button will update the word in the wordList attribut.
+     * This button will update the word in the wordList attribute.
      * @param evt The event object
      */
     private void addModifyButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addModifyButtonMouseClicked
@@ -345,8 +345,8 @@ public class UI extends javax.swing.JFrame
 
     /**
      * Mouse clicked event for the load button
-     * This button will open a dialog to allow the user to select a dictionnary
-     * file. The content of the file will be loaded in the wordList attribut.
+     * This button will open a dialog to allow the user to select a dictionary
+     * file. The content of the file will be loaded in the wordList attribute.
      * @param evt The event object
      */
     private void loadButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loadButtonMouseClicked
@@ -361,7 +361,10 @@ public class UI extends javax.swing.JFrame
             filename = dialog.getDirectory() + filename;
             
             if(getWordList().loadListFromFile(filename))
+            {
+                loadedDictionaryFilename = filename;
                 refreshAllWordsList();
+            }
             
             else // if file could not be loaded, show error dialog
                 JOptionPane.showMessageDialog(this, "ERREUR: Le fichier n'a "
@@ -374,10 +377,33 @@ public class UI extends javax.swing.JFrame
     /**
      * Mouse clicked Event handler for the save button.
      * This button will save the list of words in a file.
+     * TODO: In the file dialog, restrict file type to .txt file
      * @param evt The event object
      */
     private void saveButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveButtonMouseClicked
         
+        FileDialog dialog = new FileDialog(this, "Ssuvegarder le fichier dictionnaire", FileDialog.SAVE);
+        dialog.setFile(loadedDictionaryFilename);
+        dialog.setVisible(true);
+        
+        String filename = dialog.getFile();
+        if(filename != null) // if user selected a file
+        {
+            filename = dialog.getDirectory() + filename;
+            
+            if(this.getWordList().saveListToFile(filename))
+            {
+                loadedDictionaryFilename = filename; // save new name in case user wants to save again
+                JOptionPane.showMessageDialog(this, "La list des mots a été "
+                        + "sauvegardé dans le fichier\n" + filename + ".\n\n", "INFORMATION", 
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+
+            else // if there was a problem saving the file
+                JOptionPane.showMessageDialog(this, "ERREUR: Impossible de "
+                        + "sauvegarder dans le fichier.\n\n", "ERREUR", 
+                        JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_saveButtonMouseClicked
 
 
