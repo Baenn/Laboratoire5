@@ -80,30 +80,31 @@ public class WordListDefinition  implements WordDefinitionInterface
      * This method will either add a new word to the list (if the word wasn't 
      * found) or modify its definition (if the word was found).
      * TODO: Rename the method or split it since it does 2 things?
-     * @param m The WordDefinition object containing the word to add/modify
-     * @return True if the operation is successful.
+     * @param inputWord The WordDefinition object containing the word to add/modify
+     * @return True if the operation is successful, false otherwise
      */
     @Override
-    public boolean addWordDefinition(WordDefinition m) 
+    public boolean addWordDefinition(WordDefinition inputWord) 
     {    
         try
         {
-            // first, find the list 
+            // first, try to find the word in the list 
             boolean wordFound = false;
             for(int i = 0 ; i < wordListDictio.size() ; i++)
             {
-                if(wordListDictio.get(i).getWord().equals(m.getWord()))
+                // if word is found, we update its definitino
+                if(wordListDictio.get(i).getWord().equals(inputWord.getWord()))
                 {
-                    wordListDictio.get(i).setDefinition(m.getDefinition());
+                    wordListDictio.get(i).setDefinition(inputWord.getDefinition());
 
                     wordFound = true;
-                    i = wordListDictio.size();
+                    i = wordListDictio.size(); // escape the loop
                 }
             }
 
             // if word not found, we have to add it to the list
             if(!wordFound) // TODO must sort the list in alphabetical order
-                wordListDictio.add(m);
+                wordListDictio.add(inputWord);
 
             return true;
         }
@@ -116,14 +117,14 @@ public class WordListDefinition  implements WordDefinitionInterface
     }
 
     @Override
-    public boolean removeWordDefinition(WordDefinition m) {
+    public boolean removeWordDefinition(WordDefinition wordToRemove) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<WordDefinition> getWord(String m) {
+    public List<WordDefinition> getWord(String word) {
         positionCharWord = 0;
-        researchWord = m;
+        researchWord = word;
         return searchWord(researchWord.charAt(positionCharWord),wordListDictio);
     }
 
