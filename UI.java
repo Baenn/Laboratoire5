@@ -31,6 +31,7 @@ public class UI extends javax.swing.JFrame
     {
         // initiate attributs
         wordList = new WordListDefinition();
+        loadedDictionaryFilename = "";
         
         // initiate window component
         initComponents();
