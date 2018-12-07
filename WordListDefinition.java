@@ -75,9 +75,44 @@ public class WordListDefinition  implements WordDefinitionInterface
         }
         return listToSearch;
     }
+    
+    /**
+     * This method will either add a new word to the list (if the word wasn't 
+     * found) or modify its definition (if the word was found).
+     * TODO: Rename the method or split it since it does 2 things?
+     * @param m The WordDefinition object containing the word to add/modify
+     * @return True if the operation is successful.
+     */
     @Override
-    public boolean addWordDefinition(WordDefinition m) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean addWordDefinition(WordDefinition m) 
+    {    
+        try
+        {
+            // first, find the list 
+            boolean wordFound = false;
+            for(int i = 0 ; i < wordListDictio.size() ; i++)
+            {
+                if(wordListDictio.get(i).getWord().equals(m.getWord()))
+                {
+                    wordListDictio.get(i).setDefinition(m.getDefinition());
+
+                    wordFound = true;
+                    i = wordListDictio.size();
+                }
+            }
+
+            // if word not found, we have to add it to the list
+            if(!wordFound) // TODO must sort the list in alphabetical order
+                wordListDictio.add(m);
+
+            return true;
+        }
+        
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override

@@ -317,27 +317,13 @@ public class UI extends javax.swing.JFrame
     private void addModifyButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addModifyButtonMouseClicked
         String inputWord = this.getInputField().getText();
         String inputDefinition = this.getDefinitionTextArea().getText();
-        List<WordDefinition> allWords = getWordList().getAllWordsDefinition();
         
-        boolean wordFound = false;
-        for(int i = 0 ; i < allWords.size() ; i++)
-        {
-            if(allWords.get(i).getWord().equals(inputWord))
-            {
-                allWords.get(i).setDefinition(inputDefinition);
-                
-                wordFound = true;
-                i = allWords.size();
-            }
-        }
+        if(!this.getWordList().addWordDefinition(new WordDefinition(inputWord, inputDefinition)))
+            JOptionPane.showMessageDialog(this, "ERREUR: Le mot n'a pas pu "
+                    + "être modifié/ajouté\n\n", "ERREUR", JOptionPane.ERROR_MESSAGE);
         
-        // if word not found, we have to add it to the list
-        if(!wordFound) // TODO must resort after
-        {
-            WordDefinition word = new WordDefinition(inputWord, inputDefinition);
-            allWords.add(word);
+        else // if no error, we can refresh the list
             refreshAllWordsList();
-        }
     }//GEN-LAST:event_addModifyButtonMouseClicked
 
     private void loadButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loadButtonMouseClicked
