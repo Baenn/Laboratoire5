@@ -360,9 +360,11 @@ public class UI extends javax.swing.JFrame
         if(filename != null) // if user selected a file
         {
             filename = dialog.getDirectory() + filename;
+            List<WordDefinition> list = DictioFileOperations.loadListFromFile(filename);
             
-            if(getWordList().loadListFromFile(filename))
+            if(list != null) // if list was successfully retrieved
             {
+                this.getWordList().setWordListDictio(list);
                 loadedDictionaryFilename = filename;
                 refreshAllWordsList();
             }
@@ -392,7 +394,7 @@ public class UI extends javax.swing.JFrame
         {
             filename = dialog.getDirectory() + filename;
             
-            if(this.getWordList().saveListToFile(filename))
+            if(DictioFileOperations.saveListToFile(filename, this.getWordList().getAllWordsDefinition()))
             {
                 loadedDictionaryFilename = filename; // save new name in case user wants to save again
                 JOptionPane.showMessageDialog(this, "La list des mots a été "
