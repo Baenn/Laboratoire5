@@ -36,14 +36,15 @@ public class UI extends javax.swing.JFrame
         initComponents();
         setTitle("Dictio");
         
-        // populate the all words list
+        // TODO: remove this?
+        // populate the all words list 
         refreshAllWordsList();
     }
     
     // instance methods
     /**
      * Method used to refresh the all words list.
-     * It is called when object is created and when a new word is added
+     * It is called when a new list is loaded or when a new word is added
      */
     public void refreshAllWordsList()
     {
@@ -226,6 +227,11 @@ public class UI extends javax.swing.JFrame
         });
 
         saveButton.setText("Enregistrer");
+        saveButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                saveButtonMouseClicked(evt);
+            }
+        });
 
         jLabel1.setText("Dictio");
 
@@ -294,6 +300,12 @@ public class UI extends javax.swing.JFrame
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Mouse clicked event handler for the allWordsList UI list.
+     * When an element is selected in the list, the matching definition will be
+     * displayed in the definitionTextArea.
+     * @param evt The event object
+     */
     private void allWordsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allWordsListMouseClicked
         
         String selectedWord = this.getAllWordsList().getSelectedValue();
@@ -310,10 +322,15 @@ public class UI extends javax.swing.JFrame
             }
         }
         
+        // display the definition
         this.getInputField().setText(selectedWord);
-        
     }//GEN-LAST:event_allWordsListMouseClicked
 
+    /**
+     * Mouse clicked event for the add / modify button
+     * This button will update the word in the wordList attribut.
+     * @param evt The event object
+     */
     private void addModifyButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addModifyButtonMouseClicked
         String inputWord = this.getInputField().getText();
         String inputDefinition = this.getDefinitionTextArea().getText();
@@ -326,6 +343,12 @@ public class UI extends javax.swing.JFrame
             refreshAllWordsList();
     }//GEN-LAST:event_addModifyButtonMouseClicked
 
+    /**
+     * Mouse clicked event for the load button
+     * This button will open a dialog to allow the user to select a dictionnary
+     * file. The content of the file will be loaded in the wordList attribut.
+     * @param evt The event object
+     */
     private void loadButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loadButtonMouseClicked
         // open file dialog
         FileDialog dialog = new FileDialog(this, "Choisir le fichier dictionnaire", FileDialog.LOAD);
@@ -347,6 +370,15 @@ public class UI extends javax.swing.JFrame
                         + "les lignes\n\n", "ERREUR", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_loadButtonMouseClicked
+
+    /**
+     * Mouse clicked Event handler for the save button.
+     * This button will save the list of words in a file.
+     * @param evt The event object
+     */
+    private void saveButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveButtonMouseClicked
+        
+    }//GEN-LAST:event_saveButtonMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
