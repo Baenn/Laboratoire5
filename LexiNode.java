@@ -28,40 +28,89 @@ public class LexiNode
     /**
      * Method used to search for a word
      * @param word The word to be search
+     * @param returnFirstResultOnly If set to true, the method will return the 
+     * first result found. This is to improve the speed of the search in case the
+     * tree is long.
      * @return An array list containing the result of the search query.
      */
-    public ArrayList<WordDefinition> searchWord(String word)
+    public ArrayList<WordDefinition> searchWord(String word, boolean returnFirstResultOnly)
     {
-        return searchWordRecursive(this, word, 1, new ArrayList<WordDefinition>());
+        return searchWordRecursion(this, word, 1, new ArrayList<WordDefinition>(), returnFirstResultOnly);
     }
     
     /**
      * Method to add a word to the tree letter by letter
      * @param wordDefinition An object containing a word and a definition
-     * @return True if the word was added to the tree
+     * @return True if the word was added to the tree, false if the word already
+     * exist in the tree
      */
-    public boolean addWordToTree(WordDefinition wordDefinition)
+    public boolean addWord(WordDefinition wordDefinition)
     {
         // get word
-        String word = wordDefinition.getWord();
+        String wordToAdd = wordDefinition.getWord();
         
-        // call recursive method to get the last node inserted
-        LexiNode node = this.addWordToTreeRecursion(this, word, 1);
-        node.setWordDefinition(wordDefinition);
+        // search for the word in the tree to make sure it doesn't exist
+        ArrayList<WordDefinition> query = this.searchWord(wordToAdd, true);
         
-        return true;
+        if(query.size() > 0 && query.get(0).getWord().equals(wordToAdd))
+            return false;
+        
+        else // if word doesn't exist, we can add it
+        {
+            // call recursive method to get the last node inserted
+            LexiNode node = this.addWordRecursion(this, wordToAdd, 1);
+            node.setWordDefinition(wordDefinition);
+
+            return true;
+        }
+    }
+    
+    /**
+     * Method used to modify the definition of a word. If the word is not found
+     * in the list, the addWord function will be called to add the word to 
+     * the list.
+     * @param wordDef The WordDefinition object represnting the word to modify
+     * @return True if the word was modified/added, false if the operation was
+     * unsuccessful
+     */
+    public boolean modifyWord(WordDefinition wordDef)
+    {
+        String wordToModify = wordDef.getWord();
+        String definitino = wordDef.getDefinition();
+        
+        // query the word in the tree
+        ArrayList<WordDefinition> query = this.searchWord(wordToModify, true);
+        
+        if(query.size() == 0) // if query returned no result, we add the word
+            return this.addWord(wordDefinition);
+        
+        // the word should be the first element in the list
+        else if( query.get(0).getWord().equals(wordToModify) )
+        {
+            query.get(0).setDefinition(definitino);
+            return true;
+        }
+        
+        else
+            return false;
     }
     
     // private methods
     /**
-     * 
-     * @param parentNode
-     * @param word
-     * @param index
-     * @param wordsFoundList
-     * @return 
+     * Recursive method used by the searchWord method to search along the tree 
+     * for a word.
+     * @param parentNode The starting node to check. FIrst value should be the 
+     * root node of the tree
+     * @param word The word to search for
+     * @param index The index position of the letter in the word. Should start
+     * with 1 because we assume the root node created with the first letter
+     * @param wordsFoundList A list that will contain the results of the query
+     * @param returnFirstResultOnly If set to true, search will stop after 1 
+     * result found
+     * @return The wordsFoundList array list will be returned with the result of
+     * the search query.
      */
-    private ArrayList<WordDefinition> searchWordRecursive(LexiNode parentNode, String word, int index, ArrayList<WordDefinition> wordsFoundList)
+    private ArrayList<WordDefinition> searchWordRecursion(LexiNode parentNode, String word, int index, ArrayList<WordDefinition> wordsFoundList, boolean returnFirstResultOnly)
     {
         // if we've looked trough all letters of the word, we continue the search
         // along the tree to find other words
@@ -70,12 +119,15 @@ public class LexiNode
             if(parentNode.getWordDefinition() != null)
                 wordsFoundList.add(parentNode.getWordDefinition());
             
+            if(returnFirstResultOnly)
+                return wordsFoundList;
+            
             for(int i = 0 ; i < parentNode.childNodes.size() ; i++)
             {
                 LexiNode childNode = parentNode.childNodes.get(i);
 
                 // search for words children of the children node
-                searchWordRecursive(childNode, word, index, wordsFoundList);
+                searchWordRecursion(childNode, word, index, wordsFoundList, returnFirstResultOnly);
             }
             
             return wordsFoundList;
@@ -97,7 +149,7 @@ public class LexiNode
         
         // if node was found, we proceed to next letter
         if(childNode != null)
-            return searchWordRecursive(childNode, word, index+1, wordsFoundList);
+            return searchWordRecursion(childNode, word, index+1, wordsFoundList, returnFirstResultOnly);
         
         // if node wasn't found, we stop search
         else
@@ -105,7 +157,8 @@ public class LexiNode
     }
     
     /**
-     * Recursive method to add a node for every letter in the word in the true
+     * Recursive method used by the addWord method  to add a node for every 
+     * letter in the word in the true
      * @param parentNode The starting node to check. FIrst value should be the root node of the tree
      * @param word The word to be added in the tree
      * @param index The index position of the letter in the word. Should start
@@ -113,7 +166,7 @@ public class LexiNode
      * @return The last node in the tree (which contains the last letter of the 
      * word)
      */
-    private LexiNode addWordToTreeRecursion(LexiNode parentNode, String word, int index)
+    private LexiNode addWordRecursion(LexiNode parentNode, String word, int index)
     {
         // if we've added all letters to the tree
         if(index == word.length())
@@ -135,14 +188,14 @@ public class LexiNode
         
         // if node was found, we proceed ot next letter
         if(childNode != null)
-            return addWordToTreeRecursion(childNode, word, index+1);
+            return addWordRecursion(childNode, word, index+1);
         
         // if node wasn't found, we create it using the letter
         else
         {
             childNode = new LexiNode( word.charAt(index) );
             parentNode.childNodes.add( childNode );
-            return addWordToTreeRecursion(childNode, word, index+1);
+            return addWordRecursion(childNode, word, index+1);
         }
     }
     

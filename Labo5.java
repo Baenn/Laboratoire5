@@ -26,28 +26,30 @@ public class Labo5
         word = "Banc";
         def = "Pour assir";
         wordDef = new WordDefinition(word, def);
-        bTree.addWordToTree(wordDef);
+        bTree.addWord(wordDef);
         
         word = "Banane";
         def = "Pour manger";
         wordDef = new WordDefinition(word, def);
-        bTree.addWordToTree(wordDef);
+        bTree.addWord(wordDef);
         
         word = "Banque";
-        def = "Pour manger";
+        def = "$$";
         wordDef = new WordDefinition(word, def);
-        bTree.addWordToTree(wordDef);
+        bTree.addWord(wordDef);
+        
+        wordDef.setDefinition("Pour l'argent");
+        bTree.modifyWord(wordDef);
         
         word = "Banquette";
-        def = "Pour manger";
+        def = "Pour les ours polaires";
         wordDef = new WordDefinition(word, def);
-        bTree.addWordToTree(wordDef);
+        bTree.addWord(wordDef);
         
-        ArrayList<WordDefinition> list = bTree.searchWord("Banqu");
-        System.out.println(list.size());
+        ArrayList<WordDefinition> list = bTree.searchWord("Banqu", false);
         for(int i = 0 ; i < list.size() ; i++)
         {
-            System.out.println(list.get(i).getWord());
+            System.out.println(list.get(i).getWord() + " : " + list.get(i).getDefinition());
         }
         
         
