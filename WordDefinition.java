@@ -8,9 +8,11 @@ public class WordDefinition {
     public WordDefinition(String word, String definition) 
     {
         if(word == null || word.isEmpty())
-            throw new WordException();
+            throw new IllegalArgumentException("Empty or null word are invalid");
+        
         else if(definition == null || definition.isEmpty())
-            throw new DefinitionException();
+            throw new IllegalArgumentException("Empty or null definition are invalid");
+        
         setWord(word);
         setDefinition(definition);
 

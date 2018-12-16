@@ -16,8 +16,40 @@ public class Labo5
     public static void main(String args[])
     {
         // show UI
-        UI ui = new UI();
-        ui.setVisible(true);
+        /*UI ui = new UI();
+        ui.setVisible(true);*/
+        
+        LexiNode bTree = new LexiNode('B');
+        String word, def;
+        WordDefinition wordDef;
+        
+        word = "Banc";
+        def = "Pour assir";
+        wordDef = new WordDefinition(word, def);
+        bTree.addWordToTree(wordDef);
+        
+        word = "Banane";
+        def = "Pour manger";
+        wordDef = new WordDefinition(word, def);
+        bTree.addWordToTree(wordDef);
+        
+        word = "Banque";
+        def = "Pour manger";
+        wordDef = new WordDefinition(word, def);
+        bTree.addWordToTree(wordDef);
+        
+        word = "Banquette";
+        def = "Pour manger";
+        wordDef = new WordDefinition(word, def);
+        bTree.addWordToTree(wordDef);
+        
+        ArrayList<WordDefinition> list = bTree.searchWord("Banqu");
+        System.out.println(list.size());
+        for(int i = 0 ; i < list.size() ; i++)
+        {
+            System.out.println(list.get(i).getWord());
+        }
+        
         
         /*
         LexiNode L1 = new LexiNode(null, 'a',false);
