@@ -18,6 +18,7 @@ public class Labo5
         // show UI
         UI ui = new UI();
         ui.setVisible(true);
+        
         /*
         // Lexi node test
         LexiNode bTree = new LexiNode('B');

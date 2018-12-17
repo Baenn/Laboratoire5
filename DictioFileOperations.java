@@ -91,7 +91,7 @@ public final class DictioFileOperations
      * @param filename The name of the file to save
      * @return True if the operation is successful, false otherwise.
      */
-    public static boolean saveListToFile(String filename, List<WordDefinition> wordListDictio)
+    public static boolean saveListToFile(String filename, ArrayList<WordDefinition> wordListDictio)
     {
         File file = new File(filename);
         

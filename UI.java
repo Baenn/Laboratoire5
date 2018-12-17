@@ -471,7 +471,7 @@ public class UI extends javax.swing.JFrame
      * @param evt The event object
      */
     private void saveButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveButtonMouseClicked
-        /*
+        
         FileDialog dialog = new FileDialog(this, "Ssuvegarder le fichier dictionnaire", FileDialog.SAVE);
         dialog.setFile(loadedDictionaryFilename);
         dialog.setVisible(true);
@@ -479,15 +479,30 @@ public class UI extends javax.swing.JFrame
         String filename = dialog.getFile();
         if(filename != null) // if user selected a file
         {
+            // add .txt extension if user didn't add it
+            if(!filename.substring(filename.length() - 4).equals(".txt"))
+                filename = filename + ".txt";
+            
+            // add full path of the filename
             filename = dialog.getDirectory() + filename;
             
-            ArrayList<WordDefinition> allWordsList = new ArrayList<>();
+            // get all WordDefinition in an arraylist 
+            ArrayList<WordDefinition> allWordDefinitionList = new ArrayList<>();
             for(int i = 0 ; i < lexiNodeTrees.size() ; i++)
             {
+                ArrayList<WordDefinition> allWordsInTree = lexiNodeTrees.get(i).getAllWordsFromTree();
                 
+                for(int j = 0 ; j < allWordsInTree.size() ; j++)
+                {
+                    allWordDefinitionList.add(allWordsInTree.get(j));
+                }
             }
             
-            if(DictioFileOperations.saveListToFile(filename, this.wordList.getAllWordsDefinition()))
+            // sort the list of word definition in alphabetical order
+            Collections.sort(allWordDefinitionList, new WordDefinitionComparator());
+            
+            // save to file
+            if(DictioFileOperations.saveListToFile(filename, allWordDefinitionList))
             {
                 loadedDictionaryFilename = filename; // save new name in case user wants to save again
                 JOptionPane.showMessageDialog(this, "La list des mots a été "
@@ -499,7 +514,7 @@ public class UI extends javax.swing.JFrame
                 JOptionPane.showMessageDialog(this, "ERREUR: Impossible de "
                         + "sauvegarder dans le fichier.\n\n", "ERREUR", 
                         JOptionPane.ERROR_MESSAGE);
-        }*/
+        }
     }//GEN-LAST:event_saveButtonMouseClicked
 
     /**
