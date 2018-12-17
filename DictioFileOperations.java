@@ -23,15 +23,19 @@ public final class DictioFileOperations
      * @param filename The name of the dictionary file
      * @return 
      */
-    public static List<WordDefinition> loadListFromFile(String filename)
+    public static ArrayList<LexiNode> loadListFromFile(String filename)
     {
         // load definitions from txt file
         File file = new File(filename);
         
         try 
         {
+            // create array to contain list of trees
+            ArrayList<LexiNode> lexiNodeList = new ArrayList<>();
+            
+            // read the file
             BufferedReader reader = new BufferedReader(new FileReader(file));
-            List<WordDefinition> list = new ArrayList<>(); 
+            ArrayList<WordDefinition> list = new ArrayList<>(); 
             String line; // this variable will contain each line of the file
             
             while( (line = reader.readLine()) != null)
@@ -43,12 +47,33 @@ public final class DictioFileOperations
                 String word = wordDefinitionParts[0].trim();
                 String definition = wordDefinitionParts[1].trim();
                 
-                // add the word and definition to the list
-                list.add(new WordDefinition(word, definition));
+                // add to LexiNode tree (each tree for each letter in the alphabet)
+                char firstLetterOfWord = word.toUpperCase().charAt(0);
+                
+                int index = -1;
+                for(int i = 0 ; i < lexiNodeList.size() ; i++)
+                {
+                    // find the index of the root tree
+                    if(lexiNodeList.get(i).getCurrentCharacter() == firstLetterOfWord)
+                    {
+                        index = i;
+                        i = lexiNodeList.size(); // escape the loop
+                    }
+                }
+
+                // if index not found (the word starts with a different 
+                // letter), we create a new tree.
+                if(index == -1)
+                {
+                    lexiNodeList.add(new LexiNode(firstLetterOfWord));
+                    index = lexiNodeList.size() - 1;
+                }
+                
+                lexiNodeList.get(index).addWord( new WordDefinition(word, definition) );
             }
             
             reader.close();
-            return list;
+            return lexiNodeList;
         } 
         
         catch (Exception e) 

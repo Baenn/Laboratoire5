@@ -36,7 +36,7 @@ public class LexiNode
      */
     public ArrayList<WordDefinition> searchWord(String word, boolean returnFirstResultOnly)
     {
-        return searchWordRecursion(this, word, 1, new ArrayList<WordDefinition>(), returnFirstResultOnly);
+        return searchWordRecursion(this, word.toLowerCase(), 1, new ArrayList<WordDefinition>(), returnFirstResultOnly);
     }
     
     /**
@@ -49,6 +49,10 @@ public class LexiNode
     {
         // get word
         String wordToAdd = wordDefinition.getWord();
+        
+        // reformat word (first letter capital, rest lowercase)
+        wordToAdd = wordToAdd.toUpperCase().charAt(0) + wordToAdd.substring(1).toLowerCase();
+        wordDefinition.setWord(wordToAdd);
         
         // search for the word in the tree to make sure it doesn't exist
         ArrayList<WordDefinition> query = this.searchWord(wordToAdd, true);
@@ -77,23 +81,26 @@ public class LexiNode
     public boolean modifyWord(WordDefinition wordDef)
     {
         String wordToModify = wordDef.getWord();
-        String definitino = wordDef.getDefinition();
+        String definition = wordDef.getDefinition();
         
         // query the word in the tree
-        ArrayList<WordDefinition> query = this.searchWord(wordToModify, true);
+        ArrayList<WordDefinition> query = this.searchWord(wordToModify.toLowerCase(), true);
         
         if(query.size() == 0) // if query returned no result, we add the word
-            return this.addWord(wordDefinition);
+            return this.addWord(wordDef);
         
         // the word should be the first element in the list
         else if( query.get(0).getWord().equals(wordToModify) )
         {
-            query.get(0).setDefinition(definitino);
+            query.get(0).setDefinition(definition);
             return true;
         }
         
         else
+        {
+            System.out.println(wordToModify + " : " + query.get(0).getWord());
             return false;
+        }
     }
     
     /**

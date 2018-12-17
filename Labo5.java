@@ -18,7 +18,7 @@ public class Labo5
         // show UI
         UI ui = new UI();
         ui.setVisible(true);
-        
+        /*
         // Lexi node test
         LexiNode bTree = new LexiNode('B');
         String word, def;
@@ -51,7 +51,7 @@ public class Labo5
         for(int i = 0 ; i < list.size() ; i++)
         {
             System.out.println(list.get(i).getWord() + " : " + list.get(i).getDefinition());
-        }
+        }*/
         
         
         /*

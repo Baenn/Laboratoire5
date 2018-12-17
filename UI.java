@@ -6,6 +6,7 @@
 package Laboratoire5;
 
 import java.awt.FileDialog;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -14,6 +15,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListModel;
 
 /**
  *
@@ -22,7 +24,8 @@ import javax.swing.JTextField;
 public class UI extends javax.swing.JFrame 
 {
     // attributs
-    private WordListDefinition wordList;
+    private ArrayList<LexiNode> lexiNodeTrees;
+    private ArrayList<WordDefinition> queryResult; // to contain search result
     private String loadedDictionaryFilename; // the name of the original file loaded (used for saving with the same name)
     
     /**
@@ -31,19 +34,15 @@ public class UI extends javax.swing.JFrame
     public UI() 
     {
         // initiate attributs
-        wordList = new WordListDefinition();
         loadedDictionaryFilename = "";
         
         // initiate window component
         initComponents();
         setTitle("Dictio");
         
-        // TODO: remove this?
-        // populate the all words list 
-        refreshAllWordsList();
-        
-        // empty the search list
-        this.getSearchSuggestionList().setModel(new DefaultListModel());
+        // empty lists
+        this.getSearchSuggestionList().setModel( new DefaultListModel() );
+        this.getAllWordsList().setModel( new DefaultListModel()  );
     }
     
     // instance methods
@@ -53,12 +52,27 @@ public class UI extends javax.swing.JFrame
      */
     public void refreshAllWordsList()
     {
-        DefaultListModel model = new DefaultListModel();
-        List<WordDefinition> allWords = wordList.getAllWordsDefinition();
+        // create list
+        ArrayList<String> allWordsList = new ArrayList<>();
         
-        for(WordDefinition word : allWords)
+        // get all word from every tree and store them in the list
+        for(int i = 0 ; i < lexiNodeTrees.size() ; i++)
         {
-            model.addElement(word.getWord());
+            ArrayList<WordDefinition> allWordsInTree = lexiNodeTrees.get(i).getAllWordsFromTree();
+            for(WordDefinition word : allWordsInTree)
+            {
+                allWordsList.add(word.getWord());
+            }
+        }
+        
+        // TODO : sort the list in alphabetical order
+        
+        // show the list in the UI
+        DefaultListModel model = new DefaultListModel();
+        
+        for(String word : allWordsList)
+        {
+            model.addElement(word);
         }
         
         this.getAllWordsList().setModel(model);
@@ -95,10 +109,21 @@ public class UI extends javax.swing.JFrame
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        searchField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                searchFieldKeyReleased(evt);
+            }
+        });
+
         searchSuggestionList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
+        });
+        searchSuggestionList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                searchSuggestionListMouseClicked(evt);
+            }
         });
         jScrollPane2.setViewportView(searchSuggestionList);
 
@@ -314,21 +339,28 @@ public class UI extends javax.swing.JFrame
     private void allWordsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allWordsListMouseClicked
         
         String selectedWord = this.getAllWordsList().getSelectedValue();
-        List<WordDefinition> allWords = wordList.getAllWordsDefinition();
+        char firstLetterOfWord = selectedWord.charAt(0);
         
-        // get the definition
-        for(int i = 0 ; i < allWords.size() ; i++)
+        // find the index of the corresponding tree tot he first letter of the word
+        int index = -1;
+        for(int i = 0 ; i < lexiNodeTrees.size() ; i++)
         {
-            if(allWords.get(i).getWord().equals(selectedWord))
+            if(lexiNodeTrees.get(i).getCurrentCharacter() == firstLetterOfWord)
             {
-                // update definition field
-                this.getDefinitionTextArea().setText(allWords.get(i).getDefinition());
-                i = allWords.size(); // escape the looop
+                index = i;
+                i = lexiNodeTrees.size();
             }
         }
         
-        // display the definition
+        // find the word in the tree
+        WordDefinition wordQuery = lexiNodeTrees.get(index).searchWord(selectedWord, true).get(0);
+        
+        // update definition field
+        this.getDefinitionTextArea().setText(wordQuery.getDefinition());
+        
+        // display the word in the search field as well
         this.getSearchField().setText(selectedWord);
+        searchWord();
     }//GEN-LAST:event_allWordsListMouseClicked
 
     /**
@@ -337,15 +369,50 @@ public class UI extends javax.swing.JFrame
      * @param evt The event object
      */
     private void addModifyButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addModifyButtonMouseClicked
-        String inputWord = this.getSearchField().getText();
+        String inputWord = this.getAllWordsList().getSelectedValue();
         String inputDefinition = this.getDefinitionTextArea().getText();
+        WordDefinition wordToModifyAdd = new WordDefinition(inputWord, inputDefinition);
         
-        if(!this.wordList.addWordDefinition(new WordDefinition(inputWord, inputDefinition)))
-            JOptionPane.showMessageDialog(this, "ERREUR: Le mot n'a pas pu "
+        // find the index of the matching tree
+        char firstLetterOfWord = inputWord.toUpperCase().charAt(0);
+        int index = -1;
+        for(int i = 0 ; i < lexiNodeTrees.size() ; i++)
+        {
+            if(lexiNodeTrees.get(i).getCurrentCharacter() == firstLetterOfWord)
+            {
+                index = i;
+                i = lexiNodeTrees.size();
+            }
+        }
+        
+        // if index was not found, we have to create a new tree
+        if(index == -1)
+        {
+            lexiNodeTrees.add(new LexiNode(firstLetterOfWord));
+            index = lexiNodeTrees.size() - 1;
+            
+            // only possibility here is to add the word since the tree was just craeted
+            if(!lexiNodeTrees.get(index).addWord( wordToModifyAdd ))
+            {
+                // if there was an error adding the word 
+                JOptionPane.showMessageDialog(this, "ERREUR: Le mot n'a pas pu "
                     + "être modifié/ajouté\n\n", "ERREUR", JOptionPane.ERROR_MESSAGE);
+            }
+        }
         
-        else // if no error, we can refresh the list
-            refreshAllWordsList();
+        else // if index was found, we can modify/add the definition
+        {
+            if( !lexiNodeTrees.get(index).modifyWord( wordToModifyAdd ) )
+            {
+                System.out.println("hi");
+                // if there was an error modifying / adding the word 
+                JOptionPane.showMessageDialog(this, "ERREUR: Le mot n'a pas pu "
+                    + "être modifié/ajouté\n\n", "ERREUR", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        
+        // refresh the list
+        refreshAllWordsList();
     }//GEN-LAST:event_addModifyButtonMouseClicked
 
     /**
@@ -364,11 +431,10 @@ public class UI extends javax.swing.JFrame
         if(filename != null) // if user selected a file
         {
             filename = dialog.getDirectory() + filename;
-            List<WordDefinition> list = DictioFileOperations.loadListFromFile(filename);
+            lexiNodeTrees = DictioFileOperations.loadListFromFile(filename);
             
-            if(list != null) // if list was successfully retrieved
+            if(lexiNodeTrees != null) // if list was successfully retrieved
             {
-                this.wordList.setWordListDictio(list);
                 loadedDictionaryFilename = filename;
                 refreshAllWordsList();
             }
@@ -388,7 +454,7 @@ public class UI extends javax.swing.JFrame
      * @param evt The event object
      */
     private void saveButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveButtonMouseClicked
-        
+        /*
         FileDialog dialog = new FileDialog(this, "Ssuvegarder le fichier dictionnaire", FileDialog.SAVE);
         dialog.setFile(loadedDictionaryFilename);
         dialog.setVisible(true);
@@ -397,6 +463,12 @@ public class UI extends javax.swing.JFrame
         if(filename != null) // if user selected a file
         {
             filename = dialog.getDirectory() + filename;
+            
+            ArrayList<WordDefinition> allWordsList = new ArrayList<>();
+            for(int i = 0 ; i < lexiNodeTrees.size() ; i++)
+            {
+                // TODO
+            }
             
             if(DictioFileOperations.saveListToFile(filename, this.wordList.getAllWordsDefinition()))
             {
@@ -410,8 +482,92 @@ public class UI extends javax.swing.JFrame
                 JOptionPane.showMessageDialog(this, "ERREUR: Impossible de "
                         + "sauvegarder dans le fichier.\n\n", "ERREUR", 
                         JOptionPane.ERROR_MESSAGE);
-        }
+        }*/
     }//GEN-LAST:event_saveButtonMouseClicked
+
+    /**
+     * Event handler for serachField.
+     * This function will update the search tree
+     * @param evt 
+     */
+    private void searchFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchFieldKeyReleased
+        searchWord();
+    }//GEN-LAST:event_searchFieldKeyReleased
+
+    /**
+     * Function used to search a word based on the input of the user.
+     * Used by the mouse clicked event of the search field and by the 
+     * allWordsList whenever an item is selected
+     */
+    private void searchWord()
+    {
+        String inputWord = searchField.getText();
+        
+        if(inputWord.isEmpty())
+            queryResult = null;
+        
+        else
+        {
+            char firstLetter = inputWord.toUpperCase().charAt(0);
+        
+            for(int i = 0 ; i < lexiNodeTrees.size() ; i++)
+            {
+                if(lexiNodeTrees.get(i).getCurrentCharacter() == firstLetter)
+                {
+                    queryResult = lexiNodeTrees.get(i).searchWord(inputWord, false);
+                    i = lexiNodeTrees.size(); // escape the loop
+                }
+            }
+        }
+        
+        // update the list on the GUI
+        if(queryResult != null)
+        {
+            DefaultListModel model = new DefaultListModel();
+        
+            for(WordDefinition word : queryResult)
+            {
+                model.addElement(word.getWord());
+            }
+
+            this.getSearchSuggestionList().setModel(model);
+        }
+        
+        else
+            this.getSearchSuggestionList().setModel( new DefaultListModel() );
+    }
+    
+    /**
+     * Event Handler for a click on the search suggestion list.
+     * This function will show the appropriate definition of the selected word
+     * @param evt 
+     */
+    private void searchSuggestionListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchSuggestionListMouseClicked
+        String selectedWord = this.getSearchSuggestionList().getSelectedValue();
+        
+        // find the definiiton of the word
+        for(int i = 0 ; i < queryResult.size() ; i++)
+        {
+            if(queryResult.get(i).getWord().equals(selectedWord))
+            {
+                String definition = queryResult.get(i).getDefinition();
+                definitionTextArea.setText(definition);
+                i = queryResult.size();
+            }
+        }
+        
+        // select the same word in the all word list 
+        ListModel<String> modelList = getAllWordsList().getModel();
+        
+        for(int i = 0 ; i < modelList.getSize() ; i++)
+        {
+            if(modelList.getElementAt(i).equals(selectedWord))
+            {
+                getAllWordsList().setSelectedIndex(i);
+                i = modelList.getSize();
+            }
+        }
+    }//GEN-LAST:event_searchSuggestionListMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
