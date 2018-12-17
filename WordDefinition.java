@@ -9,12 +9,23 @@ package Laboratoire5;
  * @author : Banujan Atputharajah and Maxym Bonnette
  * @version : 1.0
  */
-public class WordDefinition {
-
+public class WordDefinition 
+{
+    // attributs
     private String word;
     private String definition;
 
-    public WordDefinition(String word, String definition) 
+    // constructor
+    /**
+     * Default constructor for the class
+     * @ requires   word != null && word.isEmpty() == false
+     *              definition != null && definition.isEmpty() == false
+     * @param word The name of the word
+     * @param definition The matching definition of the word
+     * @throws IllegalArgumentException if word is null or empty OR if definition
+     * is null or empty
+     */
+    public WordDefinition(String word, String definition) throws IllegalArgumentException
     {
         if(word == null || word.isEmpty())
             throw new IllegalArgumentException("Empty or null word are invalid");
@@ -27,6 +38,7 @@ public class WordDefinition {
 
     }
 
+    // accessors ethods 
     public String getWord() {
         return word;
     }
@@ -35,7 +47,7 @@ public class WordDefinition {
         return definition;
     }
 
-    // mutator
+    // mutator methods
     public void setWord(String word) {
         this.word = word;
     }

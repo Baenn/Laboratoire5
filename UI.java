@@ -30,6 +30,7 @@ public class UI extends javax.swing.JFrame
     private ArrayList<WordDefinition> queryResult; // to contain search result
     private String loadedDictionaryFilename; // the name of the original file loaded (used for saving with the same name)
     
+    // constructor
     /**
      * Creates new form UI
      */
@@ -37,6 +38,7 @@ public class UI extends javax.swing.JFrame
     {
         // initiate attributs
         loadedDictionaryFilename = "";
+        lexiNodeTrees = new ArrayList<>();
         
         // initiate window component
         initComponents();
@@ -51,6 +53,7 @@ public class UI extends javax.swing.JFrame
     /**
      * Method used to refresh the all words list.
      * It is called when a new list is loaded or when a new word is added
+     * @ ensures allWordsList.getModel() != null
      */
     public void refreshAllWordsList()
     {
@@ -337,6 +340,8 @@ public class UI extends javax.swing.JFrame
      * Mouse clicked event handler for the allWordsList UI list.
      * When an element is selected in the list, the matching definition will be
      * displayed in the definitionTextArea.
+     * @ ensures    searchField.getText() != null && searchField.isEmpty() == false
+     *              definitionTextArea.getText() != null
      * @param evt The event object
      */
     private void allWordsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allWordsListMouseClicked
@@ -455,6 +460,11 @@ public class UI extends javax.swing.JFrame
             {
                 loadedDictionaryFilename = filename;
                 refreshAllWordsList();
+                
+                // clear text area and search suggestion
+                searchSuggestionList.setModel(new DefaultListModel());
+                definitionTextArea.setText("");
+                searchField.setText("");
             }
             
             else // if file could not be loaded, show error dialog
@@ -520,7 +530,7 @@ public class UI extends javax.swing.JFrame
 
     /**
      * Event handler for serachField.
-     * This function will update the search tree
+     * This function will update the searchSuggestionList 
      * @param evt 
      */
     private void searchFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchFieldKeyReleased

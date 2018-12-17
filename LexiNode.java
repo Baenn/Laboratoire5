@@ -25,6 +25,7 @@ public class LexiNode
     // constructor
     /**
      * Default constructor for the class.
+     * @ requires character The character to be stored in this node
      * @param character The character for the current node
      */
     public LexiNode(char character)
@@ -37,6 +38,8 @@ public class LexiNode
     // inatance methods
     /**
      * Method used to search for a word
+     * @ requires   word != null && word.isEmpty() == false
+     *              returnFirstResultOnly == true || returnFirstResultOnly == false
      * @param word The word to be search
      * @param returnFirstResultOnly If set to true, the method will return the 
      * first result found. This is to improve the speed of the search in case the
@@ -50,18 +53,22 @@ public class LexiNode
     
     /**
      * Method to add a word to the tree letter by letter
-     * @param wordDefinition An object containing a word and a definition
+     * @ requires wordDef != null
+     * @param wordDef An object containing a word and a definition
      * @return True if the word was added to the tree, false if the word already
-     * exist in the tree
+     * exist in the tree or if the wordDefinition provided is invalid
      */
-    public boolean addWord(WordDefinition wordDefinition)
+    public boolean addWord(WordDefinition wordDef)
     {
+        if(wordDef == null)
+            return false;
+        
         // get word
-        String wordToAdd = wordDefinition.getWord();
+        String wordToAdd = wordDef.getWord();
         
         // reformat word (first letter capital, rest lowercase)
         wordToAdd = wordToAdd.toUpperCase().charAt(0) + wordToAdd.substring(1).toLowerCase();
-        wordDefinition.setWord(wordToAdd);
+        wordDef.setWord(wordToAdd);
         
         // search for the word in the tree to make sure it doesn't exist
         ArrayList<WordDefinition> query = this.searchWord(wordToAdd, true);
@@ -73,7 +80,7 @@ public class LexiNode
         {
             // call recursive method to get the last node inserted
             LexiNode node = this.addWordRecursion(this, wordToAdd, 1);
-            node.setWordDefinition(wordDefinition);
+            node.setWordDefinition(wordDef);
 
             return true;
         }
@@ -83,12 +90,16 @@ public class LexiNode
      * Method used to modify the definition of a word. If the word is not found
      * in the list, the addWord function will be called to add the word to 
      * the list.
-     * @param wordDef The WordDefinition object represnting the word to modify
+     * @ requires wordDef != null
+     * @param wordDef The WordDefinition object representing the word to modify
      * @return True if the word was modified/added, false if the operation was
      * unsuccessful
      */
     public boolean modifyWord(WordDefinition wordDef)
     {
+        if(wordDef == null)
+            return false;
+        
         String wordToModify = wordDef.getWord();
         String definition = wordDef.getDefinition();
         
@@ -125,6 +136,7 @@ public class LexiNode
     /**
      * Recursive method used by the searchWord method to search along the tree 
      * for a word.
+     * Recursion complexity : log(n)
      * @param parentNode The starting node to check. FIrst value should be the 
      * root node of the tree
      * @param word The word to search for
@@ -185,6 +197,7 @@ public class LexiNode
     /**
      * Recursive method used by the addWord method  to add a node for every 
      * letter in the word in the true
+     * Recursion complexity : log(n)
      * @param parentNode The starting node to check. FIrst value should be the root node of the tree
      * @param word The word to be added in the tree
      * @param index The index position of the letter in the word. Should start
@@ -228,6 +241,7 @@ public class LexiNode
     /**
      * Recursive method used by the getAllWordsFromTree function to fetch all 
      * words in the tree
+     * Recursion complexity : O(n) + log(n)
      * @param parentNode The starting node to check. FIrst value should be the 
      * root node of the tree
      * @param list The array list object that will contain the search query

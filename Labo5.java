@@ -13,6 +13,10 @@ import java.util.ArrayList;
  */
 public class Labo5 
 {
+    /**
+     * Main method of the application
+     * @param args The command line arguments (not needed for this application)
+     */
     public static void main(String args[])
     {
         // show UI
