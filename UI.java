@@ -7,6 +7,7 @@ package Laboratoire5;
 
 import java.awt.FileDialog;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -65,7 +66,8 @@ public class UI extends javax.swing.JFrame
             }
         }
         
-        // TODO : sort the list in alphabetical order
+        // sort the list in alphabetical order
+        Collections.sort(allWordsList);
         
         // show the list in the UI
         DefaultListModel model = new DefaultListModel();
@@ -360,7 +362,22 @@ public class UI extends javax.swing.JFrame
         
         // display the word in the search field as well
         this.getSearchField().setText(selectedWord);
+        
+        // get search suggestion too
         searchWord();
+        
+        // select the same word in the search suggestion list 
+        ListModel<String> modelList = getSearchSuggestionList().getModel();
+        
+        for(int i = 0 ; i < modelList.getSize() ; i++)
+        {
+            if(modelList.getElementAt(i).equals(selectedWord))
+            {
+                getSearchSuggestionList().setSelectedIndex(i);
+                i = modelList.getSize();
+            }
+        }
+        
     }//GEN-LAST:event_allWordsListMouseClicked
 
     /**
@@ -467,7 +484,7 @@ public class UI extends javax.swing.JFrame
             ArrayList<WordDefinition> allWordsList = new ArrayList<>();
             for(int i = 0 ; i < lexiNodeTrees.size() ; i++)
             {
-                // TODO
+                
             }
             
             if(DictioFileOperations.saveListToFile(filename, this.wordList.getAllWordsDefinition()))
@@ -523,11 +540,20 @@ public class UI extends javax.swing.JFrame
         // update the list on the GUI
         if(queryResult != null)
         {
-            DefaultListModel model = new DefaultListModel();
-        
+            ArrayList<String> words = new ArrayList<>();
             for(WordDefinition word : queryResult)
             {
-                model.addElement(word.getWord());
+                words.add(word.getWord());
+            }
+            
+            // sort the list of words alphabetically 
+            Collections.sort(words);
+            
+            // display the list of wordsin the UI
+            DefaultListModel model = new DefaultListModel();
+            for(String word : words)
+            {
+                model.addElement(word);
             }
 
             this.getSearchSuggestionList().setModel(model);
