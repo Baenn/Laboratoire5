@@ -1,15 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Laboratoire5;
 
 import java.awt.FileDialog;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
@@ -19,8 +12,16 @@ import javax.swing.JTextField;
 import javax.swing.ListModel;
 
 /**
- *
- * @author AP85250
+ * This class represents the Graphical User Interface (GUI) of the application
+ * Responsibilities : 
+ *          - Show the user interface of the application
+ *          - Handle events (mouse clicked, key released...) of UI elements
+ * Collaborators :
+ *          - DictioFileOperations
+ *          - LexiNode
+ *          - WordDefinition
+ * @author : Banujan Atputharajah and Maxym Bonnette
+ * @version : 1.0
  */
 public class UI extends javax.swing.JFrame 
 {

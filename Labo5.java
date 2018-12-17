@@ -1,15 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Laboratoire5;
 
 import java.util.ArrayList;
 
 /**
- *
- * @author AP85250
+ * This class contains the main methods
+ * Responsibilities : 
+ *          - Show the UI
+ * Collaborators :
+ *          - UI
+ * @author : Banujan Atputharajah and Maxym Bonnette
+ * @version : 1.0
  */
 public class Labo5 
 {

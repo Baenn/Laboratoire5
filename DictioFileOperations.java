@@ -1,6 +1,3 @@
-/*
- * This class is used to read and write a dictionary file.
- */
 package Laboratoire5;
 
 import java.io.BufferedReader;
@@ -14,8 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
- * @author Banujan
+ * This class is used to read and write a dictionary file.
+ * Responsibilities : 
+ *          - Load a dictionary file
+ *          - Save a list of words and their definitions to a file
+ * Collaborators :
+ *          - LexiNode
+ *          - WordDefinition
+ * @author : Banujan Atputharajah and Maxym Bonnette
+ * @version : 1.0
  */
 public final class DictioFileOperations 
 {

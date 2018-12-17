@@ -1,5 +1,14 @@
 package Laboratoire5;
 
+/**
+ * This class represents a word and its matching definition.
+ * Responsibilities : 
+ *          - Contain a word and its matching definition.
+ * Collaborators :
+ *          - 
+ * @author : Banujan Atputharajah and Maxym Bonnette
+ * @version : 1.0
+ */
 public class WordDefinition {
 
     private String word;

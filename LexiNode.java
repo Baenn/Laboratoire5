@@ -2,6 +2,19 @@ package Laboratoire5;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents the data structure of the application.
+ * It represents a node in the tree structure.
+ * Responsibilities : 
+ *          - Search a word letter by letter
+ *          - Add a word to the tree (create a node for every letter of the word)
+ *          - Modify an existing word in tree structure
+ *          - Get a list of all words in the tree
+ * Collaborators :
+ *          - WordDefinition
+ * @author : Banujan Atputharajah and Maxym Bonnette
+ * @version : 1.0
+ */
 public class LexiNode
 {
     // data members
