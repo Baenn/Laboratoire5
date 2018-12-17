@@ -6,8 +6,10 @@ package Laboratoire5;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +36,7 @@ public final class DictioFileOperations
             ArrayList<LexiNode> lexiNodeList = new ArrayList<>();
             
             // read the file
-            BufferedReader reader = new BufferedReader(new FileReader(file));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "ISO-8859-1"));
             ArrayList<WordDefinition> list = new ArrayList<>(); 
             String line; // this variable will contain each line of the file
             
