@@ -16,9 +16,10 @@ public class Labo5
     public static void main(String args[])
     {
         // show UI
-        /*UI ui = new UI();
-        ui.setVisible(true);*/
+        UI ui = new UI();
+        ui.setVisible(true);
         
+        // Lexi node test
         LexiNode bTree = new LexiNode('B');
         String word, def;
         WordDefinition wordDef;

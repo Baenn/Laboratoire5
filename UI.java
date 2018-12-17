@@ -7,6 +7,7 @@ package Laboratoire5;
 
 import java.awt.FileDialog;
 import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
@@ -40,6 +41,9 @@ public class UI extends javax.swing.JFrame
         // TODO: remove this?
         // populate the all words list 
         refreshAllWordsList();
+        
+        // empty the search list
+        this.getSearchSuggestionList().setModel(new DefaultListModel());
     }
     
     // instance methods
@@ -50,7 +54,7 @@ public class UI extends javax.swing.JFrame
     public void refreshAllWordsList()
     {
         DefaultListModel model = new DefaultListModel();
-        List<WordDefinition> allWords = getWordList().getAllWordsDefinition();
+        List<WordDefinition> allWords = wordList.getAllWordsDefinition();
         
         for(WordDefinition word : allWords)
         {
@@ -70,9 +74,9 @@ public class UI extends javax.swing.JFrame
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        inputField = new javax.swing.JTextField();
+        searchField = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
-        suggestionList = new javax.swing.JList<String>();
+        searchSuggestionList = new javax.swing.JList<String>();
         jLabel4 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -91,12 +95,12 @@ public class UI extends javax.swing.JFrame
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        suggestionList.setModel(new javax.swing.AbstractListModel() {
+        searchSuggestionList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane2.setViewportView(suggestionList);
+        jScrollPane2.setViewportView(searchSuggestionList);
 
         jLabel4.setText("Recherche");
 
@@ -107,7 +111,7 @@ public class UI extends javax.swing.JFrame
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(inputField, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
+                    .addComponent(searchField, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -124,7 +128,7 @@ public class UI extends javax.swing.JFrame
                 .addContainerGap()
                 .addComponent(jLabel4)
                 .addGap(18, 18, 18)
-                .addComponent(inputField, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -310,7 +314,7 @@ public class UI extends javax.swing.JFrame
     private void allWordsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allWordsListMouseClicked
         
         String selectedWord = this.getAllWordsList().getSelectedValue();
-        List<WordDefinition> allWords = getWordList().getAllWordsDefinition();
+        List<WordDefinition> allWords = wordList.getAllWordsDefinition();
         
         // get the definition
         for(int i = 0 ; i < allWords.size() ; i++)
@@ -324,7 +328,7 @@ public class UI extends javax.swing.JFrame
         }
         
         // display the definition
-        this.getInputField().setText(selectedWord);
+        this.getSearchField().setText(selectedWord);
     }//GEN-LAST:event_allWordsListMouseClicked
 
     /**
@@ -333,10 +337,10 @@ public class UI extends javax.swing.JFrame
      * @param evt The event object
      */
     private void addModifyButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addModifyButtonMouseClicked
-        String inputWord = this.getInputField().getText();
+        String inputWord = this.getSearchField().getText();
         String inputDefinition = this.getDefinitionTextArea().getText();
         
-        if(!this.getWordList().addWordDefinition(new WordDefinition(inputWord, inputDefinition)))
+        if(!this.wordList.addWordDefinition(new WordDefinition(inputWord, inputDefinition)))
             JOptionPane.showMessageDialog(this, "ERREUR: Le mot n'a pas pu "
                     + "être modifié/ajouté\n\n", "ERREUR", JOptionPane.ERROR_MESSAGE);
         
@@ -364,7 +368,7 @@ public class UI extends javax.swing.JFrame
             
             if(list != null) // if list was successfully retrieved
             {
-                this.getWordList().setWordListDictio(list);
+                this.wordList.setWordListDictio(list);
                 loadedDictionaryFilename = filename;
                 refreshAllWordsList();
             }
@@ -394,7 +398,7 @@ public class UI extends javax.swing.JFrame
         {
             filename = dialog.getDirectory() + filename;
             
-            if(DictioFileOperations.saveListToFile(filename, this.getWordList().getAllWordsDefinition()))
+            if(DictioFileOperations.saveListToFile(filename, this.wordList.getAllWordsDefinition()))
             {
                 loadedDictionaryFilename = filename; // save new name in case user wants to save again
                 JOptionPane.showMessageDialog(this, "La list des mots a été "
@@ -414,7 +418,6 @@ public class UI extends javax.swing.JFrame
     private javax.swing.JButton addModifyButton;
     private javax.swing.JList<String> allWordsList;
     private javax.swing.JTextArea definitionTextArea;
-    private javax.swing.JTextField inputField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -429,15 +432,12 @@ public class UI extends javax.swing.JFrame
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JButton loadButton;
     private javax.swing.JButton saveButton;
-    private javax.swing.JList<String> suggestionList;
+    private javax.swing.JTextField searchField;
+    private javax.swing.JList<String> searchSuggestionList;
     // End of variables declaration//GEN-END:variables
 
 
     // accessor methods
-    public WordListDefinition getWordList() {
-        return wordList;
-    }
-
     public JButton getAddModifyButton() {
         return addModifyButton;
     }
@@ -450,8 +450,8 @@ public class UI extends javax.swing.JFrame
         return definitionTextArea;
     }
 
-    public JTextField getInputField() {
-        return inputField;
+    public JTextField getSearchField() {
+        return searchField;
     }
 
     public JButton getLoadButton() {
@@ -462,40 +462,7 @@ public class UI extends javax.swing.JFrame
         return saveButton;
     }
 
-    public JList<String> getSuggestionList() {
-        return suggestionList;
-    }
-    
-    // mutator methods
-    public void setWordList(WordListDefinition wordList) {
-        this.wordList = wordList;
-    }
-
-    public void setAddModifyButton(JButton addModifyButton) {
-        this.addModifyButton = addModifyButton;
-    }
-
-    public void setAllWordsList(JList<String> allWordsList) {
-        this.allWordsList = allWordsList;
-    }
-
-    public void setDefinitionTextArea(JTextArea definitionTextArea) {
-        this.definitionTextArea = definitionTextArea;
-    }
-
-    public void setInputField(JTextField inputField) {
-        this.inputField = inputField;
-    }
-
-    public void setLoadButton(JButton loadButton) {
-        this.loadButton = loadButton;
-    }
-
-    public void setSaveButton(JButton saveButton) {
-        this.saveButton = saveButton;
-    }
-
-    public void setSuggestionList(JList<String> suggestionList) {
-        this.suggestionList = suggestionList;
+    public JList<String> getSearchSuggestionList() {
+        return searchSuggestionList;
     }
 }

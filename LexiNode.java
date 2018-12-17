@@ -1,5 +1,6 @@
 package Laboratoire5;
 
+import com.sun.org.apache.xerces.internal.dom.ParentNode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -93,6 +94,15 @@ public class LexiNode
         
         else
             return false;
+    }
+    
+    /**
+     * Method to get all words in the tree
+     * @return An array list object containing all the words in the tree
+     */
+    public ArrayList<WordDefinition> getAllWordsFromTree()
+    {
+        return getAllWordsFromTreeRecursion(this, new ArrayList<WordDefinition>());
     }
     
     // private methods
@@ -197,6 +207,29 @@ public class LexiNode
             parentNode.childNodes.add( childNode );
             return addWordRecursion(childNode, word, index+1);
         }
+    }
+    
+    /**
+     * Recursive method used by the getAllWordsFromTree function to fetch all 
+     * words in the tree
+     * @param parentNode The starting node to check. FIrst value should be the 
+     * root node of the tree
+     * @param list The array list object that will contain the search query
+     * @return An array list object containing the query result
+     */
+    private ArrayList<WordDefinition> getAllWordsFromTreeRecursion(LexiNode parentNode, ArrayList<WordDefinition> list)
+    {
+        for(int i = 0 ; i < parentNode.childNodes.size() ; i++)
+        {
+            LexiNode childNode = parentNode.childNodes.get(i);
+            
+            if(childNode.getWordDefinition() != null)
+                list.add(childNode.getWordDefinition());
+            
+            getAllWordsFromTreeRecursion(childNode, list);
+        }
+        
+        return list;
     }
     
     // accessor methods
