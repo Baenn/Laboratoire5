@@ -392,7 +392,7 @@ public class UI extends javax.swing.JFrame
      * @param evt The event object
      */
     private void addModifyButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addModifyButtonMouseClicked
-        String inputWord = this.getAllWordsList().getSelectedValue();
+        String inputWord = this.searchField.getText();
         String inputDefinition = this.getDefinitionTextArea().getText();
         WordDefinition wordToModifyAdd = new WordDefinition(inputWord, inputDefinition);
         
@@ -421,6 +421,12 @@ public class UI extends javax.swing.JFrame
                 JOptionPane.showMessageDialog(this, "ERREUR: Le mot n'a pas pu "
                     + "être modifié/ajouté\n\n", "ERREUR", JOptionPane.ERROR_MESSAGE);
             }
+            
+            else // if add was successful
+            {
+                JOptionPane.showMessageDialog(this, "Le mot a été ajouté!\n", "INFORMATION", 
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
         }
         
         else // if index was found, we can modify/add the definition
@@ -431,6 +437,12 @@ public class UI extends javax.swing.JFrame
                 // if there was an error modifying / adding the word 
                 JOptionPane.showMessageDialog(this, "ERREUR: Le mot n'a pas pu "
                     + "être modifié/ajouté\n\n", "ERREUR", JOptionPane.ERROR_MESSAGE);
+            }
+            
+            else // if modification was successful
+            {
+                JOptionPane.showMessageDialog(this, "Le mot a été modifié!\n", "INFORMATION", 
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         }
         
